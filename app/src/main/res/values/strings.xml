@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">awty</string>
+    <string name="btnStartText">Start</string>
+    <string name="messagePlaceholder">Write a message...</string>
+    <string name="phonePlaceholder">Phone Number...</string>
+    <string name="minutePlaceholder">Number of minutes...</string>
+    <string name="btnStopText">Stop</string>
+</resources>
