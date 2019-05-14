@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     var message = ""
     var number: Long = 0
-    var minutes: Int = 1
+    var minutes: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,22 +38,40 @@ class MainActivity : AppCompatActivity() {
 
         // Start and Stop service
         val btn = findViewById<Button>(R.id.btnService)
-        btn.setOnClickListener {
-            if (!serviceRunning) {
-                // start service
-                btn.text = getString(R.string.btnStopText)
-                serviceIntent = Intent(this, AWTYService::class.java).also {
-                    it.putExtra("message", message)
-                    it.putExtra("number", number)
-                    it.putExtra("minutes", minutes)
-                    startService(it)
-                }
-            } else {
-                // stop service
-                btn.text = getString(R.string.btnStartText)
-                intent.also { stopService(serviceIntent) }
+        fun CheckLegality() : Boolean {
+            if (minutes < 1) {
+                Toast.makeText(applicationContext, "Invalid minutes supplied", Toast.LENGTH_SHORT).show()
+                return false
             }
-            serviceRunning = !serviceRunning
+            if (number < 1000000) {
+                Toast.makeText(applicationContext, "Invalid phone number", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            if (message.isEmpty()) {
+                Toast.makeText(applicationContext, "Empty message!", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            return true
+        }
+        btn.setOnClickListener {
+            val check: Boolean = CheckLegality()
+            if (check) {
+                if (!serviceRunning) {
+                    // start service
+                    btn.text = getString(R.string.btnStopText)
+                    serviceIntent = Intent(this, AWTYService::class.java).also {
+                        it.putExtra("message", message)
+                        it.putExtra("number", number)
+                        it.putExtra("minutes", minutes)
+                        startService(it)
+                    }
+                } else {
+                    // stop service
+                    btn.text = getString(R.string.btnStartText)
+                    intent.also { stopService(serviceIntent) }
+                }
+                serviceRunning = !serviceRunning
+            }
         }
     }
 
