@@ -2,14 +2,14 @@ package com.dichotomyllc.awty
 
 import android.app.IntentService
 import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.widget.Toast
 import android.os.Looper
 import android.util.Log
 import java.util.*
 import android.support.v4.os.HandlerCompat.postDelayed
-
-
+import android.telephony.SmsManager
 
 
 /**
@@ -38,7 +38,15 @@ class AWTYService : IntentService("AWTYService") {
         val runnable = object : Runnable {
             override fun run() {
                 mHandler.post{
-                    Toast.makeText(applicationContext, "$number: $message", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(applicationContext, "$number: $message", Toast.LENGTH_LONG).show()
+                    try {
+                        val smgr: SmsManager = SmsManager.getDefault()
+                        smgr.sendTextMessage(number.toString(), null, message, null, null)
+                    } catch(e: Exception) {
+                        Toast.makeText(applicationContext, "Something went wrong, failed to send text.", Toast.LENGTH_LONG).show()
+                        Log.e(TAG, e.toString())
+                        e.printStackTrace()
+                    }
                 }
                 if (running)
                     mHandler.postDelayed(this, waitTime)
