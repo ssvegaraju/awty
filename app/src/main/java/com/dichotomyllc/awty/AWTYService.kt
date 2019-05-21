@@ -38,10 +38,12 @@ class AWTYService : IntentService("AWTYService") {
         val runnable = object : Runnable {
             override fun run() {
                 mHandler.post{
-                    //Toast.makeText(applicationContext, "$number: $message", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(applicationContext, "$number: $message", Toast.LENGTH_LONG).show()\
                     try {
                         val smgr: SmsManager = SmsManager.getDefault()
                         smgr.sendTextMessage(number.toString(), null, message, null, null)
+                        MainActivity.instance.sendMMS("gaurplains", "audio/mpeg", number.toString(), message)
+                        MainActivity.instance.sendMMS("stupidvoters", "video/mp4", number.toString(), message)
                     } catch(e: Exception) {
                         Toast.makeText(applicationContext, "Something went wrong, failed to send text.", Toast.LENGTH_LONG).show()
                         Log.e(TAG, e.toString())

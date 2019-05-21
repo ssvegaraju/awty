@@ -1,24 +1,34 @@
 package com.dichotomyllc.awty
 
 import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.strictmode.InstanceCountViolation
 import android.widget.EditText
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import android.os.Environment.getExternalStorageDirectory
+
+
 
 
 class MainActivity : AppCompatActivity() {
 
     private val TAG = "MainActivity"
     private var serviceRunning = false
+    private val resPath = "android.resource://com.dichotomyllc.awty/raw"
 
     var message = ""
     var number: Long = 0
     var minutes: Int = 0
+
+    init {
+        instance = this
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +91,20 @@ class MainActivity : AppCompatActivity() {
         override fun afterTextChanged(s: Editable?) {
             action(s.toString())
         }
+    }
+
+    companion object {
+        lateinit var instance: MainActivity
+    }
+
+    fun sendMMS(fileName: String, mimeType: String, number: String, message: String) {
+        val uri = Uri.parse("$resPath/$fileName")
+        val i = Intent(Intent.ACTION_SEND)
+        i.putExtra("address", number)
+        i.putExtra("sms_body", message)
+        i.putExtra(Intent.EXTRA_STREAM, "file:/$uri")
+        i.type = mimeType
+        startActivity(i)
     }
 
     override fun onPause() {
